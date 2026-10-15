@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ml-intrusion-detector // sEEcGunter</title>
+<meta name="description" content="Network intrusion detection with Isolation Forest and XGBoost on NSL-KDD and UNSW-NB15.">
+<meta name="theme-color" content="#0a0e14">
+<link rel="icon" href="../assets/favicon.png">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="project.css">
+</head>
+<body>
+<header class="nav"><a class="brand" href="../index.html">~/sEEcGunter<span class="blink">_</span></a><nav aria-label="Main"><a href="../index.html#projects">projects</a><a href="../index.html#contact">contact</a></nav></header>
+<main class="pj" id="main">
+<a class="back" href="../index.html#projects">← back to projects</a>
+
+<div class="win"><div class="win-bar"><i></i><i></i><i></i><span>~/projects/ml-intrusion-detector</span></div><h1>ml-intrusion-detector</h1></div>
+<p class="lead">An end-to-end network intrusion detection pipeline, the kind a SOC uses to flag suspicious traffic. It combines an unsupervised detector for unknown attacks with a supervised one for known patterns, and shows why default settings silently lie about performance.</p>
+<ul class="tags"><li>Python</li><li>scikit-learn</li><li>XGBoost</li><li>Isolation Forest</li><li>SMOTE</li><li>NSL-KDD</li><li>UNSW-NB15</li></ul>
+<div class="kpis reveal"><div class="kpi"><b>0.93</b><span>F1 after tuning</span></div><div class="kpi"><b>0.97</b><span>ROC-AUC</span></div><div class="kpi"><b>0.94</b><span>F1 on UNSW-NB15</span></div><div class="kpi"><b>405k</b><span>network flows</span></div></div>
+<section class="reveal"><h2><span class="g">01.</span> pipeline</h2>
+<pre class="term">raw flows ─► encode + scale ─┬─► Isolation Forest  (unsupervised · unknown attacks)
+                             └─► XGBoost           (supervised · known patterns)
+                                      │
+                         PR-curve threshold tuning ─► stacking ─► multi-class triage
+                                                                 (DoS · Probe · R2L · U2R)</pre></section>
+<section class="reveal"><h2><span class="g">02.</span> the silent failure</h2>
+<p class="note">A model with 0.97 ROC-AUC can still miss a third of attacks at the default 0.5 threshold. Flip the switch.</p>
+<div class="ctrl"><button class="toggle" id="thr" aria-pressed="false">threshold: default 0.5</button></div>
+<div class="bars" id="idsbars"></div></section>
+<section class="reveal"><h2><span class="g">03.</span> binary results on NSL-KDD</h2>
+<table><thead><tr><th>model</th><th>accuracy</th><th>F1</th><th>ROC-AUC</th></tr></thead><tbody>
+<tr><td>Isolation Forest</td><td>0.83</td><td>0.87</td><td>0.94</td></tr>
+<tr><td>XGBoost (default)</td><td>0.81</td><td>0.80</td><td>0.97</td></tr>
+<tr><td class="g">XGBoost (tuned)</td><td class="g">0.92</td><td class="g">0.93</td><td class="g">0.97</td></tr>
+<tr><td>Stacking IF + XGB</td><td>0.81</td><td>0.80</td><td>0.95</td></tr></tbody></table>
+<p>Re-applied to UNSW-NB15, the same method reaches F1 0.94 with an opposite optimal threshold (0.90 vs 0.0001): the approach generalizes by adapting to each dataset's bias.</p></section>
+</main>
+<footer><span class="g">$</span> exit 0 · sEEcGunter</footer>
+<script src="project.js"></script>
+</body>
+</html>

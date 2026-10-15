@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>llm-redteam-arena // sEEcGunter</title>
+<meta name="description" content="Red team lab against a vulnerable LLM application: 12 chained techniques across the OWASP LLM Top 10.">
+<meta name="theme-color" content="#0a0e14">
+<link rel="icon" href="../assets/favicon.png">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="project.css">
+</head>
+<body>
+<header class="nav"><a class="brand" href="../index.html">~/sEEcGunter<span class="blink">_</span></a><nav aria-label="Main"><a href="../index.html#projects">projects</a><a href="../index.html#contact">contact</a></nav></header>
+<main class="pj" id="main">
+<a class="back" href="../index.html#projects">← back to projects</a>
+
+<div class="win"><div class="win-bar"><i></i><i></i><i></i><span>~/projects/llm-redteam-arena</span></div><h1>llm-redteam-arena</h1></div>
+<p class="lead">A self-contained red team lab against <b>NovaTech AI Assistant</b>, a deliberately vulnerable Flask app backed by a local Mistral 7B. The goal: move from zero knowledge to full compromise, black-box, across the OWASP LLM Top 10 (2025).</p>
+<ul class="tags"><li>Python</li><li>Flask</li><li>ChromaDB</li><li>SQLite</li><li>Docker</li><li>Mistral 7B</li><li>OWASP LLM Top 10</li><li>MITRE ATLAS</li></ul>
+<div class="kpis reveal"><div class="kpi"><b data-count="12">12</b><span>chained techniques</span></div><div class="kpi"><b data-count="9">9</b><span>OWASP LLM categories</span></div><div class="kpi"><b data-count="7">7</b><span>secrets captured</span></div><div class="kpi"><b data-count="6">6</b><span>attack surfaces</span></div></div>
+<section class="reveal"><h2><span class="g">01.</span> architecture</h2>
+<pre class="term" aria-label="Architecture diagram">browser / curl
+     │ :5000
+     ▼
+┌─ Docker ───────────────────────┐        ┌─ host ──────────────┐
+│ NovaTech Flask webapp (target) │ :1234  │ LM Studio            │
+│ Flask · ChromaDB · SQLite      │───────►│ Mistral 7B Instruct  │
+└────────────────────────────────┘        └──────────────────────┘
+fully local · no external API calls</pre></section>
+<section class="reveal"><h2><span class="g">02.</span> attack chain</h2>
+<p class="note">Each finding unlocks the next surface. Pick a technique, or use the arrow keys.</p>
+<div class="chain" role="tablist" aria-label="Techniques" id="chain"></div>
+<div class="panel" role="tabpanel" id="panel" aria-live="polite"></div>
+<script type="application/json" id="steps">[{"id": "T-01", "t": "Direct Prompt Injection", "m": "LLM01 \u00b7 AML.T0054 \u00b7 /chat", "d": "The attacker controls the user turn and overrides the system prompt. No cryptographic boundary separates developer instructions from user input, so a crafted message redirects the model's goal."}, {"id": "T-02", "t": "Indirect Prompt Injection", "m": "LLM01 \u00b7 AML.T0054.001 \u00b7 /summarize, /compose", "d": "Malicious instructions hidden in documents and emails the LLM processes for a legitimate user. The attacker never talks to the model directly."}, {"id": "T-03", "t": "Jailbreak", "m": "LLM01 \u00b7 AML.T0054.002 \u00b7 /chat", "d": "Targets the alignment layer itself: fictional framing, many-shot priming, base64 smuggling and multi-turn escalation show that safety training is probabilistic, not absolute."}, {"id": "T-04", "t": "System Prompt Extraction", "m": "LLM07 \u00b7 AML.T0057 \u00b7 /chat", "d": "Completion traps, translation tricks and a JSON dump make the model reproduce its system prompt, leaking five production secrets in a single response."}, {"id": "T-05", "t": "RAG Poisoning", "m": "LLM08 + LLM04 \u00b7 /ask, POST /ingest", "d": "An unauthenticated ingestion endpoint lets anyone write to the vector store, and a confidential HR document sits in the public RAG index."}, {"id": "T-06", "t": "Stored Prompt Injection", "m": "LLM01 \u00b7 /feedback \u2192 admin", "d": "A payload submitted through the public feedback form fires later when an admin asks the LLM to summarize feedback, stealing the admin session."}, {"id": "T-07", "t": "LLM Output Attacks", "m": "LLM05 \u00b7 innerHTML rendering", "d": "Model output is rendered as raw HTML, turning the LLM into an XSS delivery mechanism with an exfiltration sink."}, {"id": "T-08", "t": "Excessive Agency", "m": "LLM06 \u00b7 Nova Actions", "d": "The LLM emits action tags that a backend runner executes without validation: creating an admin account, escalating tickets, posting to internal channels."}, {"id": "T-09", "t": "SQL Injection via LLM", "m": "LLM05 \u00b7 /search", "d": "Natural-language search is translated to SQL by the model and executed without parameterisation."}, {"id": "T-10", "t": "Unbounded Consumption", "m": "LLM10 \u00b7 all inference routes", "d": "No rate limiting and no max_tokens cap: token floods and recursive expansion exhaust the inference backend."}, {"id": "T-11", "t": "Sensitive Info Disclosure", "m": "LLM02 \u00b7 /chat customer_id", "d": "An IDOR on customer_id injects another customer's PII into the model context without any auth check."}, {"id": "T-12", "t": "Misinformation", "m": "LLM09 \u00b7 /compose", "d": "With no factual grounding, the model confidently writes fake CVE advisories, SLA clauses and compliance certificates, ready for spear-phishing."}]</script>
+</section>
+<section class="reveal"><h2><span class="g">03.</span> evidence</h2>
+<figure><img src="img/redteam-sysprompt.webp" alt="The assistant dumps its full system prompt as JSON, including API key, database credentials and JWT secret" loading="lazy" width="1200" height="852"><figcaption>T-04 · JSON dump: one prompt, every production secret.</figcaption></figure>
+<figure><img src="img/redteam-agency.webp" alt="The assistant emits action tags that the backend executes, creating an attacker admin account" loading="lazy" width="1200" height="1131"><figcaption>T-08 · excessive agency: the LLM provisions an attacker-controlled admin account.</figcaption></figure>
+<figure><img src="img/redteam-rag.webp" alt="The knowledge base answers with confidential HR data about a fictional executive" loading="lazy" width="1200" height="715"><figcaption>T-05 · RAG leak: confidential HR data served from the public index (fictional data).</figcaption></figure>
+</section>
+<section class="reveal"><h2><span class="g">04.</span> outcome</h2>
+<p>The assessment report maps every finding to OWASP and MITRE ATLAS, rates its real-world impact (working API keys, forged JWTs, stolen sessions, privilege escalation) and ends with a prioritized list of defensive controls: secrets out of prompts, authenticated ingestion, output encoding, action allow-lists, parameterised queries and inference quotas.</p></section>
+</main>
+<footer><span class="g">$</span> exit 0 · sEEcGunter</footer>
+<script src="project.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>adversarial-ml-playground // sEEcGunter</title>
+<meta name="description" content="FGSM, PGD and DeepFool from scratch in PyTorch against a CIFAR-10 CNN, plus adversarial training.">
+<meta name="theme-color" content="#0a0e14">
+<link rel="icon" href="../assets/favicon.png">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="project.css">
+</head>
+<body>
+<header class="nav"><a class="brand" href="../index.html">~/sEEcGunter<span class="blink">_</span></a><nav aria-label="Main"><a href="../index.html#projects">projects</a><a href="../index.html#contact">contact</a></nav></header>
+<main class="pj" id="main">
+<a class="back" href="../index.html#projects">← back to projects</a>
+
+<div class="win"><div class="win-bar"><i></i><i></i><i></i><span>~/projects/adversarial-ml-playground</span></div><h1>adversarial-ml-playground</h1></div>
+<p class="lead">Three classic adversarial attacks implemented from scratch in PyTorch (no cleverhans, no foolbox) against a CNN trained on CIFAR-10, then a defense with PGD adversarial training. CPU-only, reproducible on a laptop.</p>
+<ul class="tags"><li>PyTorch</li><li>CIFAR-10</li><li>FGSM</li><li>PGD</li><li>DeepFool</li><li>Adversarial training</li></ul>
+<div class="kpis reveal"><div class="kpi"><b>72.4%</b><span>clean accuracy</span></div><div class="kpi"><b>0%</b><span>under PGD-10, ε=8/255</span></div><div class="kpi"><b>33%</b><span>recovered by adversarial training</span></div><div class="kpi"><b>~3%</b><span>of pixel range changed</span></div></div>
+<section class="reveal"><h2><span class="g">01.</span> the attacks</h2>
+<table><thead><tr><th>attack</th><th>idea</th><th>bound</th><th>steps</th></tr></thead><tbody>
+<tr><td>FGSM</td><td>one big step in the direction that hurts the model most</td><td>L∞</td><td>1</td></tr>
+<tr><td>PGD</td><td>many small FGSM steps that follow the loss surface</td><td>L∞</td><td>10</td></tr>
+<tr><td>DeepFool</td><td>smallest perturbation that crosses the nearest boundary</td><td>L2</td><td>iter.</td></tr></tbody></table></section>
+<section class="reveal"><h2><span class="g">02.</span> play with the attacker budget</h2>
+<p class="note">ε is the maximum change allowed per pixel. Move it and watch the undefended model collapse.</p>
+<div class="ctrl"><label for="eps">ε =</label><input type="range" id="eps" min="0" max="3" step="1" value="2"><output id="epsv">8/255</output></div>
+<div class="bars" id="advbars"></div>
+<p class="note">Accuracy under attack; higher is better for the defender.</p></section>
+<section class="reveal"><h2><span class="g">03.</span> results</h2>
+<figure><img src="../projects/img/adv-evasion.webp" alt="Evasion rate versus epsilon for FGSM and PGD-10, with DeepFool marker" loading="lazy"><figcaption>PGD-10 evasion rate vs ε: undefended baseline vs adversarially trained model.</figcaption></figure>
+<p>The trade-off is the real lesson: the robust model drops to 59.6% clean accuracy (vs 72.4%), and it only defends the budget it was trained on, falling to 11.8% at ε=16/255. There is no free lunch in robustness.</p></section>
+</main>
+<footer><span class="g">$</span> exit 0 · sEEcGunter</footer>
+<script src="project.js"></script>
+</body>
+</html>

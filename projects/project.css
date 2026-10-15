@@ -1,9 +1,9 @@
-.pj{max-width:1000px;margin:0 auto;padding:2rem 1.25rem 4rem}
+.pj{max-width:1000px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
 .back{font-family:var(--mono);color:var(--g);text-decoration:none;display:inline-block;margin:1.5rem 0}
 .pj h1{font-size:clamp(1.8rem,6vw,3rem)}
-.pj h2{margin-top:3rem}
+.pj h2{margin-top:2.2rem}
 .lead{color:var(--mu);font-size:1.1rem;margin:1rem 0 1.5rem;max-width:70ch}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin:2rem 0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin:1.4rem 0}
 .kpi{background:var(--sf);border:1px solid #1d2633;border-radius:8px;padding:1rem;font-family:var(--mono)}
 .kpi b{display:block;font-size:1.8rem;color:var(--g)}.kpi span{color:var(--mu);font-size:.8rem}
 pre.term{background:#05080c;border:1px solid #1d2633;border-radius:8px;padding:1rem;overflow:auto;font:.8rem/1.4 var(--mono);color:var(--c)}
@@ -37,6 +37,14 @@ input[type=range]{accent-color:var(--g);width:min(320px,100%)}
 .panel{border-left-color:var(--c)}.panel h3{color:var(--c)}
 @media (prefers-reduced-motion:reduce){.fill{transition:none}}
 
-.chal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.4rem .8rem;list-style:none;padding:0;margin:1rem 0;font:.85rem/1.35 var(--mono);color:var(--mu)}
-.chal li{padding:.35rem .55rem;background:var(--sf);border:1px solid #1d2633;border-radius:4px}
+.chal{list-style:none;padding:0;margin:.75rem 0 0;display:grid;gap:.45rem}
+.chal li{padding:.45rem .65rem;background:var(--sf);border:1px solid #1d2633;border-radius:4px;font:.82rem/1.4 var(--mono);color:var(--mu)}
+.chal li b{color:var(--tx);font-weight:600}
 .pj .badge-ctf{margin:1rem 0 .5rem}
+.graph-blurb{margin:.75rem 0 .5rem;max-width:70ch}
+.graph-legend{list-style:none;padding:0;margin:.5rem 0 0;display:grid;gap:.35rem}
+.graph-legend li{font:.8rem/1.4 var(--mono);color:var(--mu);padding:.3rem 0;border-bottom:1px solid #1d2633}
+.graph-legend li b{color:var(--c);font-weight:600}
+.pj{padding:1.5rem 1.25rem 3rem}
+.pj h2{margin-top:2.2rem}
+.kpis{margin:1.4rem 0}

@@ -29,74 +29,168 @@ Operation Bellatrix (COMCYBER + CIAE, ORION 26, 23–27 March 2026) was a nation
 </div>
 
 <section class="reveal"><h2><span class="g">01.</span> day 1 — analysis / disinformation</h2>
-<ul class="chal">
-<li><b>Bienvenue</b> — Event onboarding · framed the fictional influence scenario and mission rules.</li>
-<li><b>Un message d'alerte</b> — Open web / SOCMINT · checked an alert-style claim against public posts and context.</li>
-<li><b>La vidéo du sauvetage</b> — Open media · assessed a rescue video for authenticity signals (source, framing, reuse).</li>
-<li><b>Trop beau pour être vrai</b> — Fact-check · compared a feel-good narrative with corroborating public traces.</li>
-<li><b>Au service d'une cause</b> — Narrative mapping · identified which cause / framing the content served.</li>
-<li><b>Rétablir la véracité des faits</b> — Fact-check · rebuilt a cleaner timeline of what public sources actually support.</li>
-<li><b>Identifier le primo-diffuseur</b> — SOCMINT · traced who first pushed a piece of content into the open web.</li>
-<li><b>Une metadata vaut mille images</b> — Image forensics · read embedded metadata / technical clues on a published image.</li>
-<li><b>(Dé)-Crédibiliser l'information</b> — Influence analysis · mapped how credibility was built or attacked around a claim.</li>
-<li><b>Cyber-physique !</b> — Cross-domain · linked an online narrative to a claimed physical-world effect.</li>
-<li><b>Analyser l'attaque</b> — Info-ops analysis · characterized the shape of the influence wave from public signals.</li>
-<li><b>Mesurer l'attaque</b> — Metrics · estimated reach / timing / volume of the public info-ops activity.</li>
-</ul>
+<div class="day">
+<article class="chal-prose">
+<h3>Bienvenue</h3>
+<p>Open briefing on the platform. Framed the fictional influence case and the rules of engagement for the investigation.</p>
+</article>
+<article class="chal-prose">
+<h3>Un message d'alerte</h3>
+<p>Open web / screenshot OSINT. Started from a thin social alert that pointed to a disinfo blog, then found that blog on the public internet despite incomplete clues and decoys.</p>
+</article>
+<article class="chal-prose">
+<h3>La vidéo du sauvetage</h3>
+<p>Open web + HTML/source check. Tracked a “pilot rescue” video from the disinfo blog back to the hosting site that first published the clip, instead of trusting the blog’s framing alone.</p>
+</article>
+<article class="chal-prose">
+<h3>Trop beau pour être vrai</h3>
+<p>Brand / logo OSINT. Checked whether the fake news site was impersonating a real outlet (lookalike logo / naming) to borrow credibility.</p>
+</article>
+<article class="chal-prose">
+<h3>Au service d'une cause</h3>
+<p>Narrative reuse. Followed how the same rescue video was copied onto another activist-style site and how the wording pushed an anti-army story.</p>
+</article>
+<article class="chal-prose">
+<h3>Rétablir la véracité des faits</h3>
+<p>Official debunk trail. Cross-checked the viral claim against public fact-check / “official debunk” channels that contradicted the disinfo narrative and named the pilot callsign in the scenario.</p>
+</article>
+<article class="chal-prose">
+<h3>Identifier le primo-diffuseur</h3>
+<p>SOCMINT. Worked backwards through comments and social posts to find who seeded the story first on the fictional social network before the blogs amplified it.</p>
+</article>
+<article class="chal-prose">
+<h3>Une metadata vaut mille images</h3>
+<p>Image forensics. Pulled technical metadata from a suspicious “photo” used in the campaign to see whether it looked generated / edited rather than a real field shot.</p>
+</article>
+<article class="chal-prose">
+<h3>(Dé)-Crédibiliser l'information</h3>
+<p>Fake-expert check. Verified cited “experts” and credentials in the articles against open sources to spot invented authority used to sell the lie.</p>
+</article>
+<article class="chal-prose">
+<h3>Cyber-physique !</h3>
+<p>DISARM / influence TTPs. Mapped a late-day call-to-action post onto a public disinformation framework (theme: how online speech tries to spill into real-world pressure).</p>
+</article>
+<article class="chal-prose">
+<h3>Analyser l'attaque</h3>
+<p>CSV / social dump analysis. Looked at scraped social activity for coordinated inauthentic behaviour — repeated hashtags and swarming accounts amplifying the same narrative.</p>
+</article>
+<article class="chal-prose">
+<h3>Mesurer l'attaque</h3>
+<p>Temporal metrics. Measured how fast those hashtag waves went from first post to peak volume, to describe the pacing of the info-ops burst.</p>
+</article>
+</div>
 </section>
 
 <section class="reveal"><h2><span class="g">02.</span> day 2 — technical attribution</h2>
-<ul class="chal">
-<li><b>Attribution technique</b> — Infra pivot · started linking public technical artifacts to the influence trail.</li>
-<li><b>Surveillance du réseau social</b> — SOCMINT · monitored suspect accounts / posts for operational patterns.</li>
-<li><b>La piste de l'organisation</b> — Org mapping · followed public breadcrumbs toward a controlling structure.</li>
-<li><b>Fouiller le site</b> — Web recon · browsed / enumerated a suspect site for useful public structure.</li>
-<li><b>Nos réalisations …</b> — Content review · mined a “showcase” page for reusable clues about the actors.</li>
-<li><b>La piste du financement</b> — Follow-the-money (public) · looked for open traces of how activity was funded.</li>
-<li><b>Analyse WHOIS des domaines suspects</b> — Open registries · pulled WHOIS / registration history on suspect domains.</li>
-<li><b>Découverte de preuves cachées</b> — Web artifacts · recovered less-obvious public files or leftovers on sites.</li>
-<li><b>Les Wordpress d'Hélène Volquoffe</b> — CMS footprint · correlated WordPress sites tied to the same developer trail.</li>
-<li><b>La temporalité de l'attaque</b> — Timeline · ordered public technical and narrative events on a shared clock.</li>
-<li><b>Réutilisations de code sur les domaines</b> — Code reuse · spotted shared snippets / fingerprints across domains.</li>
-<li><b>Déclenchement immédiat</b> — Trigger analysis · studied how the wave was kicked off from public signals.</li>
-</ul>
+<div class="day">
+<article class="chal-prose">
+<h3>Attribution technique</h3>
+<p>Infra pivot. Moved from narrative clues to technical breadcrumbs that could tie sites and accounts together.</p>
+</article>
+<article class="chal-prose">
+<h3>Surveillance du réseau social</h3>
+<p>SOCMINT monitoring. Watched the suspect social profiles for reusable links, habits, and cross-posts into the wider campaign.</p>
+</article>
+<article class="chal-prose">
+<h3>La piste de l'organisation</h3>
+<p>Org mapping on open pages. Followed public “about” / showcase pages toward a structure (people + front businesses) behind the influence push.</p>
+</article>
+<article class="chal-prose">
+<h3>Fouiller le site</h3>
+<p>Web recon. Browsed suspect sites methodically (menus, about, leftovers) for developer names and operational hints left in plain sight.</p>
+</article>
+<article class="chal-prose">
+<h3>Nos réalisations …</h3>
+<p>Portfolio / showcase mining. Used a public “our work” style page to list more domains tied to the same builder trail.</p>
+</article>
+<article class="chal-prose">
+<h3>La piste du financement</h3>
+<p>Follow-the-money (public). Looked at the façade shop / payment-adjacent trail for open clues linking money flow to the influence actors.</p>
+</article>
+<article class="chal-prose">
+<h3>Analyse WHOIS des domaines suspects</h3>
+<p>Open WHOIS. Queried registration data on the suspect domains to spot shared owner / registrar / creation patterns.</p>
+</article>
+<article class="chal-prose">
+<h3>Découverte de preuves cachées</h3>
+<p>Hidden paths. Used common public files (robots, sitemaps, leftover folders) to surface less-obvious material still reachable from the web.</p>
+</article>
+<article class="chal-prose">
+<h3>Les Wordpress d'Hélène Volquoffe</h3>
+<p>CMS fingerprinting. Correlated several WordPress sites attributed to the same developer and looked for a recurring technical signature across them.</p>
+</article>
+<article class="chal-prose">
+<h3>La temporalité de l'attaque</h3>
+<p>Timeline. Ordered public posts and site events on one clock to see how the technical and narrative pieces lined up.</p>
+</article>
+<article class="chal-prose">
+<h3>Réutilisations de code sur les domaines</h3>
+<p>Code / infra reuse. Compared HTML/JS/DNS-style fingerprints across domains to show they were cut from the same cloth.</p>
+</article>
+<article class="chal-prose">
+<h3>Déclenchement immédiat</h3>
+<p>Access / trigger puzzle (theme level). Worked a final technical gate on the campaign infra (credential / unlock style challenge) that “started” the next narrative beat — <b>no credential or flag published here</b>.</p>
+</article>
+</div>
 </section>
 
 <section class="reveal"><h2><span class="g">03.</span> day 3 — OSINT &amp; GEOINT</h2>
-<ul class="chal">
-<li><b>OSINT</b> — Open-source pivot · framed the pure OSINT / GEOINT leg of the investigation.</li>
-<li><b>En chemin pour une partie de pêche</b> — GEOINT / local · used open geo and local clues along a travel / fishing trail.</li>
-<li><b>Remonter la piste</b> — Link analysis · chained people, places and sites from open sources.</li>
-<li><b>Les archives au secours</b> — Web archives · recovered older public copies when live pages were thin.</li>
-<li><b>Le plein trop cher</b> — Local OSINT · used a mundane cost / fuel-style clue as a geographic pivot.</li>
-<li><b>Localisation de "Lynx"</b> — GEOINT (main plot) · pinned the fictional captive using open imagery and cadastral-style clues.</li>
-<li><b>On se rapproche</b> — GEOINT refine · narrowed the search area with additional open geo signals.</li>
-<li><b>Temps incertains</b> — Temporal OSINT · reconciled conflicting public timestamps around the endgame.</li>
-</ul>
+<div class="day">
+<article class="chal-prose">
+<h3>OSINT</h3>
+<p>Open-source framing. Shifted fully to people, places, and public records to close the search for the fictional pilot.</p>
+</article>
+<article class="chal-prose">
+<h3>En chemin pour une partie de pêche</h3>
+<p>Travel / review OSINT. Used open reviews and check-ins along a coastal-to-inland trail left by a key persona during the disappearance window.</p>
+</article>
+<article class="chal-prose">
+<h3>Remonter la piste</h3>
+<p>Link analysis. Chained persons, companies, sites and places into one investigation graph (the sketch later shown on this page).</p>
+</article>
+<article class="chal-prose">
+<h3>Les archives au secours</h3>
+<p>Web archives. Recovered older public copies when live pages were thin or cleaned.</p>
+</article>
+<article class="chal-prose">
+<h3>Le plein trop cher</h3>
+<p>Local economic OSINT. Used a mundane fuel / price-style clue as a geographic pivot toward the right area.</p>
+</article>
+<article class="chal-prose">
+<h3>Localisation de "Lynx"</h3>
+<p>GEOINT (main plot). Combined open imagery, land / parcel style clues and field photos to pin the fictional holding location — <b>coordinates and how-to withheld</b>.</p>
+</article>
+<article class="chal-prose">
+<h3>On se rapproche</h3>
+<p>GEOINT refine. Narrowed the search box with extra open geo signals once the area of interest was known.</p>
+</article>
+<article class="chal-prose">
+<h3>Temps incertains</h3>
+<p>Temporal OSINT. Reconciled conflicting public timestamps around the endgame so the story timeline still held together.</p>
+</article>
+</div>
 </section>
 
 <section class="reveal"><h2><span class="g">04.</span> themes</h2>
-<ul class="tags">
-<li>Misinfo &amp; fact-checking</li><li>social monitoring</li><li>image metadata</li><li>WHOIS &amp; domain reuse</li><li>WordPress footprinting</li><li>timing of an info-ops wave</li><li>GEOINT &amp; cadastral pivots</li><li>link-analysis graphing</li>
+<ul class="tags tags-wide">
+<li>Misinfo &amp; fact-checking</li>
+<li>SOCMINT / first poster</li>
+<li>image metadata &amp; AI-image tells</li>
+<li>DISARM-style TTP labelling</li>
+<li>coordinated hashtag waves</li>
+<li>WHOIS &amp; domain reuse</li>
+<li>WordPress fingerprinting</li>
+<li>hidden web leftovers</li>
+<li>GEOINT &amp; cadastral pivots</li>
+<li>link-analysis graphing</li>
 </ul>
 </section>
 
 <section class="reveal"><h2><span class="g">05.</span> link graph</h2>
 <figure>
   <img src="img/bellatrix-osint-graph.webp" alt="OSINT link-analysis graph of fictional entities from Operation Bellatrix" loading="lazy" width="1376" height="1037">
-  <figcaption>Fictional entities · personal OSINT link graph — people, domains, orgs and places from the Bellatrix trail.</figcaption>
+  <figcaption class="graph-caption">This is a personal link-analysis sketch of <b>fictional</b> Bellatrix entities — not a live intel product. Reading the graph left to right: <b>Marc Veylanne</b> sits in the middle (accounts, blogs, comments) and ties to <b>Sophie Pichon</b> and the <b>Peche-Fraiche</b> shop front; <b>Hélène Volquoffe</b> links several websites she developed; the <b>Milice Aquilonienne / Mercurienne</b> cluster owns land and sites around <b>Leogats</b>; <b>Lynx</b> is marked as held against photo/parcel nodes on that land; <b>Largon 33210</b> anchors a regional presence for Marc. Arrows are relationship labels from open clues gathered during the CTF. No CTF handle appears on the page.</figcaption>
 </figure>
-<p class="note graph-blurb">Personal link-analysis sketch of <b>fictional</b> Bellatrix entities — people, sites, orgs and places tied together from open clues. No CTF handle on the page.</p>
-<ul class="graph-legend">
-<li><b>Marc Veylanne</b> — central persona; owns blogs/accounts; tied to places and commentary sites.</li>
-<li><b>Sophie Pichon</b> — linked relative / business lead around the fishing company thread.</li>
-<li><b>Peche-Fraiche</b> — company + boutique site; registered in the fictional Aquilonie register.</li>
-<li><b>Hélène Volquoffe</b> — developer trail linking several suspect WordPress / tech domains.</li>
-<li><b>Milice Aquilonienne / Mercurienne</b> — org + site cluster owning / related to the Leogats land.</li>
-<li><b>Lynx</b> — plot endpoint; graph marks captivity clues against Leogats photo / parcel nodes.</li>
-<li><b>Leogats, Aquilonie</b> — geographic hub connecting land ownership, photos and the Lynx thread.</li>
-<li><b>Largon 33210</b> — regional presence anchor linked to Marc on the sketch.</li>
-</ul>
 </section>
 
 <section class="reveal"><h2><span class="g">06.</span> disclaimer</h2>

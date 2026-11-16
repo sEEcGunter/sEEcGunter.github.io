@@ -30,8 +30,8 @@
 <section class="reveal box"><h2><span class="g">01.</span> why it matters</h2>
 <p>AI agents now call tools through MCP servers: read a repo, call a cloud API. Operators trust two things: that a "read-only" tool only reads, and that a deny list actually denies. Both advisories broke one of those assumptions. The lab shows how, and what a fix that holds looks like.</p>
 <div class="tbl"><table><thead><tr><th></th><th>advisory</th><th>affected</th><th>fixed in</th></tr></thead><tbody>
-<tr><td>Lab 01</td><td><a href="https://github.com/advisories/GHSA-6hqx-gqrx-c5r2" target="_blank" rel="noopener">GHSA-6hqx-gqrx-c5r2 ↗</a></td><td><code>mcp-server-git</code> before 2026.11.11</td><td>2026.11.11</td></tr>
-<tr><td>Lab 02</td><td><a href="https://github.com/advisories/GHSA-4wq9-grf3-qg2p" target="_blank" rel="noopener">GHSA-4wq9-grf3-qg2p ↗</a></td><td><code>awslabs.aws-api-mcp-server</code> ≥0.2.13, &lt;1.5.1</td><td>1.5.1</td></tr>
+<tr><td>Lab 01</td><td><a href="https://github.com/modelcontextprotocol/servers/security/advisories/GHSA-6hqx-gqrx-c5r2" target="_blank" rel="noopener">GHSA-6hqx-gqrx-c5r2 ↗</a></td><td><code>mcp-server-git</code> before 2026.11.11</td><td>2026.11.11</td></tr>
+<tr><td>Lab 02</td><td><a href="https://github.com/awslabs/mcp/security/advisories/GHSA-4wq9-grf3-qg2p" target="_blank" rel="noopener">GHSA-4wq9-grf3-qg2p ↗</a></td><td><code>awslabs.aws-api-mcp-server</code> ≥0.2.13, &lt;1.5.1</td><td>1.5.1</td></tr>
 </tbody></table></div></section>
 
 <section class="reveal box"><h2><span class="g">02.</span> lab 01: when <code>git status</code> runs code</h2>

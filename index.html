@@ -41,9 +41,19 @@
 <section id="projects" class="reveal">
   <h2><span class="g">02.</span> projects</h2>
   <div class="filters" role="group" aria-label="Filter projects">
-    <button class="on" data-f="all">all</button><button data-f="llm">llm</button><button data-f="adv">adversarial</button><button data-f="ids">detection</button><button data-f="ctf">ctf</button>
+    <button class="on" aria-pressed="true" data-f="all">all</button><button aria-pressed="false" data-f="llm">llm</button><button aria-pressed="false" data-f="adv">adversarial</button><button aria-pressed="false" data-f="ids">detection</button><button aria-pressed="false" data-f="ctf">ctf</button><button aria-pressed="false" data-f="lab">lab</button>
   </div>
   <div class="grid" id="grid">
+    <article class="card" data-cat="lab">
+      <div class="bar"><i></i><i></i><i></i><span>mcp-hardening-lab</span></div>
+      <div class="body"><div class="head"><span class="kind">Lab</span><img class="ci" src="https://github.com/sEEcGunter/mcp-hardening-lab/actions/workflows/test.yml/badge.svg" alt="CI status" height="20"></div>
+      <h3>MCP hardening</h3>
+      <p>Local lab reproducing two MCP server bug classes from Nov 2026 advisories, each with a vulnerable build, a fixed twin and tests proving both.</p>
+      <ul class="tags bugs"><li>Git config → exec</li><li>Policy bypass via normalization</li></ul>
+      <p class="proof">45 tests · 2 fixes · Checklist</p>
+      <ul class="tags"><li>Python</li><li>MCP</li><li>Docker</li><li>GitHub Actions</li></ul>
+      <a class="link stretch" href="https://github.com/sEEcGunter/mcp-hardening-lab" target="_blank" rel="noopener">View repo →</a></div>
+    </article>
     <article class="card" data-cat="ctf">
       <div class="bar"><i></i><i></i><i></i><span>bellatrix</span></div>
       <div class="body"><h3>bellatrix</h3>

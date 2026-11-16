@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>mcp-hardening-lab // sEEcGunter</title>
+<meta name="description" content="Local, reproducible lab of two MCP server bug classes, each with a vulnerable build, a fixed twin and tests that prove both.">
+<meta name="theme-color" content="#0a0e14">
+<link rel="icon" href="../assets/favicon.png">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="project.css">
+</head>
+<body>
+<header class="nav"><a class="brand" href="../index.html">~/sEEcGunter<span class="blink">_</span></a><nav aria-label="Main"><a href="../index.html#projects">projects</a><a href="../index.html#contact">contact</a></nav></header>
+<main class="pj" id="main">
+<a class="back" href="../index.html#projects">← back to projects</a>
+
+<div class="win"><div class="win-bar"><i></i><i></i><i></i><span>~/projects/mcp-hardening-lab</span></div><h1>MCP hardening</h1></div>
+<p class="lead">Local, reproducible lab of two MCP server bug classes published in Nov 2026, each with a vulnerable build, a fixed twin and tests that prove both.</p>
+<p><img src="https://github.com/sEEcGunter/mcp-hardening-lab/actions/workflows/test.yml/badge.svg" alt="CI status" height="20"></p>
+<ul class="tags"><li>Lab</li><li>Git config → exec</li><li>Policy bypass via normalization</li></ul>
+<div class="kpis reveal"><div class="kpi"><b>45</b><span>tests</span></div><div class="kpi"><b>2</b><span>bug classes</span></div><div class="kpi"><b>2</b><span>fixes</span></div><div class="kpi"><b>1</b><span>operator checklist</span></div></div>
+<section class="reveal"><h2><span class="g">01.</span> Git config → code execution</h2>
+<p>A "read-only" Git tool (<code>git status</code>, <code>git diff</code>) runs a program named by the target repo's own <code>.git/config</code> (<code>core.fsmonitor</code>, <code>diff.external</code>, filter drivers).</p>
+<p><b>Fix:</b> command-scoped <code>GIT_CONFIG_*</code> overrides, repo-defined drivers blanked, <code>--no-ext-diff --no-textconv</code>, refuse Git &lt; 2.31.</p></section>
+<section class="reveal"><h2><span class="g">02.</span> Policy bypass via normalization</h2>
+<p>Deny/elicit lists miss operation names with consecutive capitals (<code>CreateSAMLProvider</code> → <code>create-s-a-m-l-provider</code>).</p>
+<p><b>Fix:</b> one canonical resolver for policy and request, fail-closed on unknown names.</p></section>
+<section class="reveal"><h2><span class="g">03.</span> proof</h2>
+<p>45 tests, <code>make demo</code> shows marker written on vulnerable / absent on fixed, CI green (pytest + docker build). Ships an operator <code>CHECKLIST.md</code>.</p></section>
+<section class="reveal"><h2><span class="g">04.</span> safe by design</h2>
+<p>Payload writes one marker file in <code>/tmp</code>; no network, no AWS (simulated cloud in memory).</p></section>
+<section class="reveal"><h2><span class="g">05.</span> stack</h2>
+<ul class="tags"><li>Python</li><li>FastMCP (mcp 1.x)</li><li>pytest</li><li>Docker</li><li>GitHub Actions</li></ul>
+<p><a class="link" href="https://github.com/sEEcGunter/mcp-hardening-lab" target="_blank" rel="noopener">$ git clone → view repo</a></p></section>
+</main>
+<footer><span class="g">$</span> exit 0 · sEEcGunter</footer>
+<script src="project.js"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>mcp-hardening-lab // sEEcGunter</title>
-<meta name="description" content="Local, reproducible lab of two MCP server bug classes, each with a vulnerable build, a fixed twin and tests that prove both.">
+<meta name="description" content="Two MCP server bugs published in November 2026, rebuilt as a local lab: a vulnerable server, a fixed twin, and tests that prove both.">
 <meta name="theme-color" content="#0a0e14">
 <link rel="icon" href="../assets/favicon.png">
 <link rel="stylesheet" href="../style.css">
@@ -16,23 +16,130 @@
 <a class="back" href="../index.html#projects">← back to projects</a>
 
 <div class="win"><div class="win-bar"><i></i><i></i><i></i><span>~/projects/mcp-hardening-lab</span></div><h1>MCP hardening</h1></div>
-<p class="lead">Local, reproducible lab of two MCP server bug classes published in Nov 2026, each with a vulnerable build, a fixed twin and tests that prove both.</p>
+<p class="lead">Two MCP server bugs published in November 2026, rebuilt as a local lab. Each one ships a deliberately vulnerable server, a fixed twin, and tests that show the bug on one and the block on the other. No model, no AWS, no network.</p>
 <p><img src="https://github.com/sEEcGunter/mcp-hardening-lab/actions/workflows/test.yml/badge.svg" alt="CI status" height="20"></p>
 <ul class="tags"><li>Lab</li><li>Git config → exec</li><li>Policy bypass via normalization</li></ul>
-<div class="kpis reveal"><div class="kpi"><b>45</b><span>tests</span></div><div class="kpi"><b>2</b><span>bug classes</span></div><div class="kpi"><b>2</b><span>fixes</span></div><div class="kpi"><b>1</b><span>operator checklist</span></div></div>
-<section class="reveal"><h2><span class="g">01.</span> Git config → code execution</h2>
-<p>A "read-only" Git tool (<code>git status</code>, <code>git diff</code>) runs a program named by the target repo's own <code>.git/config</code> (<code>core.fsmonitor</code>, <code>diff.external</code>, filter drivers).</p>
-<p><b>Fix:</b> command-scoped <code>GIT_CONFIG_*</code> overrides, repo-defined drivers blanked, <code>--no-ext-diff --no-textconv</code>, refuse Git &lt; 2.31.</p></section>
-<section class="reveal"><h2><span class="g">02.</span> Policy bypass via normalization</h2>
-<p>Deny/elicit lists miss operation names with consecutive capitals (<code>CreateSAMLProvider</code> → <code>create-s-a-m-l-provider</code>).</p>
-<p><b>Fix:</b> one canonical resolver for policy and request, fail-closed on unknown names.</p></section>
-<section class="reveal"><h2><span class="g">03.</span> proof</h2>
-<p>45 tests, <code>make demo</code> shows marker written on vulnerable / absent on fixed, CI green (pytest + docker build). Ships an operator <code>CHECKLIST.md</code>.</p></section>
-<section class="reveal"><h2><span class="g">04.</span> safe by design</h2>
-<p>Payload writes one marker file in <code>/tmp</code>; no network, no AWS (simulated cloud in memory).</p></section>
-<section class="reveal"><h2><span class="g">05.</span> stack</h2>
-<ul class="tags"><li>Python</li><li>FastMCP (mcp 1.x)</li><li>pytest</li><li>Docker</li><li>GitHub Actions</li></ul>
-<p><a class="link" href="https://github.com/sEEcGunter/mcp-hardening-lab" target="_blank" rel="noopener">$ git clone → view repo</a></p></section>
+<p class="cta"><a class="btn ghost" href="https://github.com/sEEcGunter/mcp-hardening-lab" target="_blank" rel="noopener">View on GitHub ↗</a></p>
+<div class="kpis reveal">
+  <div class="kpi"><b>45</b><span>tests passing</span></div>
+  <div class="kpi"><b>2</b><span>advisories reproduced</span></div>
+  <div class="kpi"><b>3</b><span>Git exec sinks closed</span></div>
+  <div class="kpi"><b>5 / 5</b><span>policy bypasses blocked</span></div>
+</div>
+
+<section class="reveal box"><h2><span class="g">01.</span> why it matters</h2>
+<p>AI agents now call tools through MCP servers: read a repo, call a cloud API. Operators trust two things: that a "read-only" tool only reads, and that a deny list actually denies. Both advisories broke one of those assumptions. The lab shows how, and what a fix that holds looks like.</p>
+<div class="tbl"><table><thead><tr><th></th><th>advisory</th><th>affected</th><th>fixed in</th></tr></thead><tbody>
+<tr><td>Lab 01</td><td><a href="https://github.com/advisories/GHSA-6hqx-gqrx-c5r2" target="_blank" rel="noopener">GHSA-6hqx-gqrx-c5r2 ↗</a></td><td><code>mcp-server-git</code> before 2026.11.11</td><td>2026.11.11</td></tr>
+<tr><td>Lab 02</td><td><a href="https://github.com/advisories/GHSA-4wq9-grf3-qg2p" target="_blank" rel="noopener">GHSA-4wq9-grf3-qg2p ↗</a></td><td><code>awslabs.aws-api-mcp-server</code> ≥0.2.13, &lt;1.5.1</td><td>1.5.1</td></tr>
+</tbody></table></div></section>
+
+<section class="reveal box"><h2><span class="g">02.</span> lab 01: when <code>git status</code> runs code</h2>
+<p><b>The bug.</b> The Git tool runs inside whatever repository the client points it at. That repository's own <code>.git/config</code> can name a program, and Git runs it on ordinary commands:</p>
+<div class="tbl"><table><thead><tr><th>config key</th><th>triggered by</th><th>what Git does</th></tr></thead><tbody>
+<tr><td>core.fsmonitor</td><td>git status</td><td>runs the named program to list changed files</td></tr>
+<tr><td>diff.external</td><td>git diff</td><td>hands the diff to the named program</td></tr>
+<tr><td>filter.&lt;x&gt;.clean</td><td>git diff on the work tree</td><td>pipes file content through the named program</td></tr>
+</tbody></table></div>
+<p><b>The scenario.</b> An agent is asked to look at an unpacked archive or a copied folder. It calls <code>git_status</code>. The repo's config names a script, and the script runs with the MCP server's environment, including any tokens it was given. Nothing in the tool name said "execute".</p>
+<pre class="term"><span class="mu"># vulnerable.py</span>
+subprocess.run(["git", "-C", repo_path, "-c", "core.quotepath=false", *args])
+
+<span class="mu"># fixed.py</span>
+MIN_GIT = (2, 31)
+HARDENED_CONFIG = (("core.fsmonitor", "false"), ("core.hooksPath", os.devnull),
+                   ("core.pager", "cat"), ("submodule.recurse", "false"), ...)
+DIFF_FLAGS = ("--no-ext-diff", "--no-textconv")
+SUBMODULE_FLAG = "--ignore-submodules=dirty"</pre>
+<p><b>The fix.</b></p>
+<ul class="list">
+<li>Every Git call gets <code>GIT_CONFIG_COUNT</code> overrides, which outrank <code>.git/config</code>: <code>core.fsmonitor=false</code>, hooks path on the null device, <code>core.pager=cat</code>, signing and submodule recursion off.</li>
+<li>Filter, merge and <code>branch.*.mergeOptions</code> drivers defined by the repo (scope <code>local</code> or <code>worktree</code>) are blanked. Global and system drivers such as Git LFS stay.</li>
+<li>Diffs run with <code>--no-ext-diff --no-textconv</code>; status and diff with <code>--ignore-submodules=dirty</code>.</li>
+<li>The tool refuses Git older than 2.31 (it ignores the overrides) and checks that the override really applied before running anything.</li>
+</ul></section>
+
+<section class="reveal box"><h2><span class="g">03.</span> lab 02: a deny list that does not deny</h2>
+<p><b>The bug.</b> The operator writes deny entries in CLI form, like <code>iam create-saml-provider</code>. The server turns the requested name into kebab case by putting a hyphen before every capital, so <code>CreateSAMLProvider</code> becomes <code>create-s-a-m-l-provider</code>. The strings never match, so the call is allowed. Names with consecutive capitals (SAML, MFA, DB, SSH) all fall through; <code>TerminateInstances</code> does not, which is why a test with only simple names stays green.</p>
+<pre class="term"><span class="mu"># vulnerable</span>
+re.sub(r"([A-Z])", r"-\1", op).lower().lstrip("-")
+
+<span class="mu"># fixed: same function for policy AND request</span>
+def canonical_token(operation):
+    return re.sub(r"[^a-z0-9]", "", operation.lower())</pre>
+<p><b>The fix.</b> One <code>resolve</code> function strips separators and case, then looks the name up in a small service model. Policy entries and requests both go through it, so the three spellings are the same operation. It fails closed: an unknown name is denied, a policy entry that does not resolve is a startup error, <code>elicit</code> never runs without a human confirmation, and the decision is applied at the call itself.</p>
+<div class="tbl"><table><thead><tr><th>operation</th><th>vulnerable</th><th>fixed</th></tr></thead><tbody>
+<tr><td>iam:CreateSAMLProvider</td><td class="r">allow, executed</td><td class="ok">deny</td></tr>
+<tr><td>iam:DeactivateMFADevice</td><td class="r">allow, executed</td><td class="am">elicit (held)</td></tr>
+<tr><td>rds:DeleteDBCluster</td><td class="r">allow, executed</td><td class="ok">deny</td></tr>
+<tr><td>rds:DeleteDBInstance</td><td class="r">allow, executed</td><td class="ok">deny</td></tr>
+<tr><td>iam:UploadSSHPublicKey</td><td class="r">allow, executed</td><td class="ok">deny</td></tr>
+<tr><td>ec2:TerminateInstances</td><td>deny</td><td>deny</td></tr>
+<tr><td>ec2:DescribeInstances</td><td>allow</td><td>allow</td></tr>
+</tbody></table></div>
+<p class="note">The last two rows are controls: the vulnerable build does read the policy, and the fix does not block legitimate calls.</p></section>
+
+<section class="reveal box"><h2><span class="g">04.</span> demo</h2>
+<p><code>make demo</code> runs each lab vulnerable, then fixed. Real output, captured with Git 2.43.0 (marker ids replaced by <code>&lt;id&gt;</code>):</p>
+<div class="win"><div class="win-bar"><i></i><i></i><i></i><span>make demo &amp;&amp; make test</span></div>
+<pre class="term flat">$ make demo
+=== Lab 01: repository Git config -> code execution ===
+payload: marker.sh writes one file and nothing else
+vulnerable   git_status           fsmonitor        marker <span class="r">WRITTEN</span>  /tmp/mcp-lab-pwned-&lt;id&gt;
+fixed        git_status           fsmonitor        marker <span class="ok">absent</span>   /tmp/mcp-lab-pwned-&lt;id&gt;
+vulnerable   git_diff_unstaged    diff.external    marker <span class="r">WRITTEN</span>  /tmp/mcp-lab-pwned-&lt;id&gt;
+fixed        git_diff_unstaged    diff.external    marker <span class="ok">absent</span>   /tmp/mcp-lab-pwned-&lt;id&gt;
+vulnerable   git_diff_unstaged    filter.clean     marker <span class="r">WRITTEN</span>  /tmp/mcp-lab-pwned-&lt;id&gt;
+fixed        git_diff_unstaged    filter.clean     marker <span class="ok">absent</span>   /tmp/mcp-lab-pwned-&lt;id&gt;
+=== Lab 02: policy bypass via operation-name normalization ===
+naive kebab of CreateSAMLProvider = create-s-a-m-l-provider
+policy deny entry                 = iam create-saml-provider
+vulnerable   iam:CreateSAMLProvider               decision=<span class="r">allow</span>   executed=True
+fixed        iam:CreateSAMLProvider               decision=<span class="ok">deny</span>    executed=False
+vulnerable   iam:DeactivateMFADevice              decision=<span class="r">allow</span>   executed=True
+fixed        iam:DeactivateMFADevice              decision=<span class="am">elicit</span>  executed=False
+vulnerable   rds:DeleteDBCluster                  decision=<span class="r">allow</span>   executed=True
+fixed        rds:DeleteDBCluster                  decision=<span class="ok">deny</span>    executed=False
+vulnerable   rds:DeleteDBInstance                 decision=<span class="r">allow</span>   executed=True
+fixed        rds:DeleteDBInstance                 decision=<span class="ok">deny</span>    executed=False
+vulnerable   iam:UploadSSHPublicKey               decision=<span class="r">allow</span>   executed=True
+fixed        iam:UploadSSHPublicKey               decision=<span class="ok">deny</span>    executed=False
+vulnerable   ec2:TerminateInstances               decision=deny    executed=False
+fixed        ec2:TerminateInstances               decision=deny    executed=False
+vulnerable   ec2:DescribeInstances                decision=allow   executed=True
+fixed        ec2:DescribeInstances                decision=allow   executed=True
+
+$ make test
+.............................................                            [100%]
+<span class="ok">45 passed</span> in 0.46s</pre></div>
+<p class="note">The demo deletes the marker and the temp repo after printing. CI runs pytest and the Docker build on every push.</p></section>
+
+<section class="reveal box"><h2><span class="g">05.</span> operator checklist</h2>
+<p class="note">Excerpt from <code>CHECKLIST.md</code>.</p>
+<ul class="check">
+<li>Override command-bearing Git config on every call, and confirm the override applied before running.</li>
+<li>Refuse Git &lt; 2.31: a warning is not a fix.</li>
+<li>A read-only tool name is not a sandbox. Do not hand secrets to a Git server that can be pointed at a repo you did not create.</li>
+<li>Confine the server to an allowlisted root, and still treat nested checkouts, archives and copied folders as untrusted.</li>
+<li>Normalize policy and request with the same function, and test with names like SAML, MFA, DB, SSH.</li>
+<li>Fail closed: unknown names denied, unresolvable policy entries stop startup, no policy data means no calls.</li>
+</ul></section>
+
+<section class="reveal box"><h2><span class="g">06.</span> limits</h2>
+<div class="limits"><ul class="list">
+<li>Simplified re-implementations that show the bug class and the fix, not drop-in copies of the upstream servers.</li>
+<li>Lab 01 does not jail <code>repo_path</code> to a root; that is an operator control listed in the checklist.</li>
+<li>Lab 01 reads config one entry per line, so a driver value containing a newline is out of scope (upstream uses a NUL-delimited listing).</li>
+<li>Lab 02's fail-closed default is stricter than the patched upstream, which still allows a call when no list matches.</li>
+</ul></div></section>
+
+<section class="reveal box"><h2><span class="g">07.</span> safe by design</h2>
+<div class="kpis mini"><div class="kpi"><b>local</b><span>only</span></div><div class="kpi"><b>no</b><span>network</span></div><div class="kpi"><b>no</b><span>real cloud</span></div></div>
+<p>The payload writes one marker file under <code>/tmp</code> and nothing else: no shell, no network, no credentials. The cloud is a dictionary in memory. Run it only on a machine you control, against repos you created for the lab.</p></section>
+
+<section class="reveal box"><h2><span class="g">08.</span> stack</h2>
+<ul class="tags"><li>Python 3.10+</li><li>FastMCP (mcp 1.x)</li><li>pytest</li><li>Docker</li><li>GitHub Actions</li><li>Git ≥ 2.31</li></ul>
+<p><a class="link" href="https://github.com/sEEcGunter/mcp-hardening-lab" target="_blank" rel="noopener">$ git clone → view repo ↗</a></p></section>
 </main>
 <footer><span class="g">$</span> exit 0 · sEEcGunter</footer>
 <script src="project.js"></script>
